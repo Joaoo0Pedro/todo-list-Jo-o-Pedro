@@ -3,8 +3,19 @@ def adicionar_tarefa(tarefas, descricao):
     Adiciona uma nova tarefa à lista.
     Uma tarefa é um dicionário com 'descricao' e 'concluida'.
     """
-    if descricao:  # Garante que a descrição não está vazia
-        nova_tarefa = {"descricao": descricao, "concluida": False}
+    if descricao: 
+        prioridade = input("Qual a prioridade desta tarefa? (Alta, Média, Baixa):").capitalize()
+        
+        if prioridade not in ['Alta', 'Média', 'Baixa']:
+            print("⚠️ Prioridade inválida. Definida como 'Baixa' por padrão.")
+            prioridade = 'Baixa'
+        
+        nova_tarefa = {
+            "descricao": descricao,
+            "prioridade": prioridade,
+            "concluida": False,
+            }
+        
         tarefas.append(nova_tarefa)
         print(f"\n✅ Tarefa '{descricao}' adicionada com sucesso!")
     else:
@@ -18,13 +29,13 @@ def listar_tarefas(tarefas):
     else:
         for i, tarefa in enumerate(tarefas):
             status = "✅" if tarefa["concluida"] else "◻️"
-            # O 'i + 1' é para mostrar um índice amigável ao usuário (começando em 1)
-            print(f"{i + 1}. {status} {tarefa['descricao']}")
+            
+            print(f"{i + 1}. {status} {tarefa['descricao']} {tarefa['prioridade']}")
     print("--------------------------")
 
 def marcar_como_concluida(tarefas, indice):
     """Marca uma tarefa como concluída com base no seu índice na lista."""
-    # O índice do usuário começa em 1, mas o da lista em 0
+
     indice_real = indice - 1
     if 0 <= indice_real < len(tarefas):
         if tarefas[indice_real]["concluida"]:
@@ -44,6 +55,23 @@ def remover_tarefa(tarefas, indice):
     else:
         print("\n❌ Índice inválido. Por favor, escolha um número da lista.")
 
+def editar_tarefa(tarefas,indice):
+    indice_real = indice - 1
+    if 0 <= indice_real < len(tarefas):
+        nova_descricao = input("Digite a nova descrição da tarefa: ")
+        nova_prioridade = input("Digite a nova prioridade (Alta, Média, Baixa): ").capitalize()
+
+        if nova_prioridade not in ['Alta', 'Média', 'Baixa']:
+            print("⚠️ Prioridade inválida. Definida como 'Baixa' por padrão.")
+            nova_prioridade = 'Baixa'
+
+        tarefas[indice_real]["descricao"] = nova_descricao
+        tarefas[indice_real]["prioridade"] = nova_prioridade
+
+        print(f"\n✏️ Tarefa atualizada com sucesso!")
+    else:
+        print("\n❌ Índice inválido. Por favor, escolha um número da lista.")
+
 def exibir_menu():
     """Exibe o menu de opções para o usuário."""
     print("\n--- MENU ---")
@@ -51,12 +79,11 @@ def exibir_menu():
     print("2. Listar Tarefas")
     print("3. Marcar Tarefa como Concluída")
     print("4. Remover Tarefa")
+    print("5. Editar Tarefa")
     print("0. Sair")
 
 def main():
-    """Função principal que executa o loop do programa."""
-    # A lista de tarefas (nosso vetor) é criada vazia aqui.
-    # Ela existirá apenas enquanto o programa estiver em execução.
+      
     lista_de_tarefas = []
 
     while True:
@@ -75,6 +102,7 @@ def main():
                 marcar_como_concluida(lista_de_tarefas, indice)
             except ValueError:
                 print("\n❌ Entrada inválida. Por favor, digite um número.")
+                
         elif escolha == '4':
             listar_tarefas(lista_de_tarefas)
             try:
@@ -82,12 +110,22 @@ def main():
                 remover_tarefa(lista_de_tarefas, indice)
             except ValueError:
                 print("\n❌ Entrada inválida. Por favor, digite um número.")
+
+        elif escolha == '5':
+            listar_tarefas(lista_de_tarefas)
+            try:
+                indice = int(input("Digite o número da tarefa para editar: "))
+                editar_tarefa(lista_de_tarefas, indice)
+            except ValueError:
+                print("\n❌ Entrada inválida. Por favor, digite um número.")
+
         elif escolha == '0':
             print("\nObrigado por usar o Gerenciador de Tarefas. Até mais!")
             break
         else:
             print("\n❌ Opção inválida. Por favor, tente novamente.")
 
-# Garante que a função main() só será executada quando o script for rodado diretamente
+
 if __name__ == "__main__":
     main()
+
